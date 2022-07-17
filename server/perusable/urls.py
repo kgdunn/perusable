@@ -16,7 +16,8 @@ Including another URLconf
 
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
+
 import debug_toolbar
 
 urlpatterns = [
@@ -24,9 +25,7 @@ urlpatterns = [
     path("api/v1/catalog/", include("catalog.urls")),
 ]
 
-if settings.DEBUG:
+if settings.DEBUG or settings.TESTING_MODE:  # changed
     urlpatterns = [
         path("debug/", include(debug_toolbar.urls)),
     ] + urlpatterns
-
-
