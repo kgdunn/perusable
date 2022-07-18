@@ -31,7 +31,7 @@ services:
       - SQL_PORT=5432
     command: [ "bash", "start.sh" ]
     ports:
-      - 8003:8000
+      - 48003:8000
     volumes:
       - ./server:/usr/src/app
 
