@@ -1,9 +1,23 @@
 # server/catalog/tests/test_views.py
 
 from rest_framework.test import APIClient, APITestCase
+from django.contrib.postgres.search import SearchVector
 
 from catalog.models import Wine
 from catalog.serializers import WineSerializer
+
+
+def setUp(self):
+    # Update fixture data search vector fields
+    Wine.objects.all().update(
+        search_vector=(
+            SearchVector("variety", weight="A")
+            + SearchVector("winery", weight="A")
+            + SearchVector("description", weight="B")
+        )
+    )
+
+    self.client = APIClient()
 
 
 class ViewTests(APITestCase):
@@ -63,9 +77,19 @@ class ViewTests(APITestCase):
         self.assertJSONEqual(response.content, [])
 
     def test_search_results_returned_in_correct_order(self):
-        response = self.client.get('/api/v1/catalog/wines/?query=Chardonnay')
+        response = self.client.get("/api/v1/catalog/wines/?query=Chardonnay")
         self.assertEquals(2, len(response.data))
-        self.assertListEqual([
-            "0082f217-3300-405b-abc6-3adcbecffd67",
-            "000bbdff-30fc-4897-81c1-7947e11e6d1a",
-        ], [item['id'] for item in response.data])        
+        self.assertListEqual(
+            [
+                "0082f217-3300-405b-abc6-3adcbecffd67",
+                "000bbdff-30fc-4897-81c1-7947e11e6d1a",
+            ],
+            [item["id"] for item in response.data],
+        )
+
+    def test_search_vector_populated_on_save(self):
+        wine = Wine.objects.create(
+            country="US", points=80, price=1.99, variety="Pinot Grigio", winery="Charles Shaw"
+        )
+        wine = Wine.objects.get(id=wine.id)
+        self.assertEqual("'charl':3A 'grigio':2A 'pinot':1A 'shaw':4A", wine.search_vector)

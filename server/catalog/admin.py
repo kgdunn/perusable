@@ -15,6 +15,7 @@ class WineAdmin(admin.ModelAdmin):
         "price",
         "variety",
         "winery",
+        "search_vector",
     )
     list_display = (
         "id",
