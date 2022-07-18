@@ -1,6 +1,5 @@
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db.models import F, Q
-
 from django_filters.rest_framework import CharFilter, FilterSet
 
 from .models import Wine

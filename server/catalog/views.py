@@ -1,8 +1,8 @@
 from rest_framework.generics import ListAPIView
 
+from .filters import WineFilterSet
 from .models import Wine
 from .serializers import WineSerializer
-from .filters import WineFilterSet
 
 
 class WinesView(ListAPIView):

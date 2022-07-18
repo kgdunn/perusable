@@ -1,10 +1,9 @@
 # server/catalog/tests/test_views.py
 
-from rest_framework.test import APIClient, APITestCase
-from django.contrib.postgres.search import SearchVector
-
 from catalog.models import Wine
 from catalog.serializers import WineSerializer
+from django.contrib.postgres.search import SearchVector
+from rest_framework.test import APIClient, APITestCase
 
 
 def setUp(self):
