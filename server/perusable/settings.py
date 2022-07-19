@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 import sys
 from pathlib import Path
+from elasticsearch_dsl import connections
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -157,3 +158,14 @@ def custom_show_toolbar(request):
 DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": custom_show_toolbar}
 
 TESTING_MODE = "test" in sys.argv
+
+
+def get_env_list(key, default=None):
+    env = os.getenv(key)
+    if env:
+        return env.split(",")
+    return default
+
+
+ES_HOSTS = get_env_list("ES_HOSTS", ["http://localhost:9200"])
+ES_CONNECTION = connections.create_connection(hosts=ES_HOSTS)
