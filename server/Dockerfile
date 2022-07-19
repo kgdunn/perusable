@@ -1,5 +1,3 @@
-# server/Dockerfile
-
 # pull official base image
 FROM python:3.10
 

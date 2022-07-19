@@ -16,6 +16,7 @@ services:
     volumes:
       - perusable-database:/var/lib/postgresql/data
 
+
   server:
     build:
       context: ./server
@@ -34,6 +35,20 @@ services:
       - 48003:8000
     volumes:
       - ./server:/usr/src/app
+
+  # Cypress container
+  cypress:
+    # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
+    image: "cypress/included:3.2.0"
+    depends_on:
+      - server
+    environment:
+      # pass base url to test pointing at the web application
+      - CYPRESS_baseUrl=http://server:3000
+    # # share the current folder as volume to avoid copying
+    # working_dir: /e2e
+    # volumes:
+    #   - ./:/e2e           
 
 volumes:
   perusable-database:
